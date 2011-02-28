@@ -1,0 +1,23 @@
+<div class="span-10" style="float: none; margin: 0 auto;">
+    <table>
+        <caption>Donate! Applications</caption>
+        {% for app in user.application_set.all %}
+        <tr>
+            <td><a href="{% url donate.views.view_application app.slug %}">{{app.name}}</a></td>
+            <td style="width: 65px; text-align: right;">
+                <a href="{% url donate.views.create_edit_application app.id %}">edit</a> | 
+                <a href="{% url donate.views.delete_application app.id %}">delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td class="center">You haven't created any applications. <a href="{% url donate.views.create_edit_application %}">Create one now!</a></td>
+        </tr>
+        {% endfor %}
+    </ul>
+    </table>
+
+    <div style="text-align: right;">
+        <a href="{% url donate.views.create_edit_application %}">Create Application</a>
+    </div>
+</div>

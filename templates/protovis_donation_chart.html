@@ -1,0 +1,79 @@
+<p>
+    <strong>Cumulative donations: </strong>: <span>${{total_donations}}</span>
+</p>
+
+<div style="-webkit-transform: rotate(-90deg); position: relative; top: 115px; left: -225px;"><strong>Daily donations (USD)</strong></div>
+
+<!-- Build the area chart -->
+<script type="text/javascript+protovis">
+
+var data = {{goal_donations|safe}};
+var dates = [];
+var max_y = 0;
+
+for(var i = 0; i < data.length; ++i) {
+    if(data[i].y > max_y) {
+        max_y = data[i].y;
+    }
+    dates.push(new Date(data[i].date_string));
+}
+max_y += 10;
+
+var startDate = dates[0];
+var endDate = dates[dates.length-1];
+
+/* Sizing and scales. */
+var w = {{chart_width}},
+    h = 200,
+    x = pv.Scale.linear(data, function(d) d.x).range(0, w),
+    y = pv.Scale.linear(0, max_y).range(0, h);
+
+/* The root panel. */
+var vis = new pv.Panel()
+    .width(w)
+    .height(h)
+    .bottom(20)
+    .left(20)
+    .right(10)
+    .top(5);
+
+/* Y-axis and ticks. */
+vis.add(pv.Rule)
+    .data(y.ticks(5))
+    .bottom(y)
+    .strokeStyle(function(d) d ? "#eee" : "#000")
+  .anchor("left").add(pv.Label)
+    .text(y.tickFormat);
+
+/* X-axis and ticks. */
+vis.add(pv.Rule)
+    .data(x.ticks(data.length))
+    .visible(true)
+    .left(function(d) {
+        return x(this.index) + (this.index == 0 ? barWidth/2 : 0);
+    })
+    .bottom(-5)
+    .height(5)
+  .anchor("bottom").add(pv.Label)
+    .text(function() {
+        var d = dates[this.index];
+        return (d.getMonth()+1) + "/" + d.getDate();
+    });
+
+var barWidth = 20;
+vis.add(pv.Bar)
+    .data(data)
+    .bottom(0).width(barWidth)
+    .left(function() {
+        return x(this.index) - (this.index ? barWidth/2: 0);
+    })
+    .height(function(d) d.y/max_y*h)
+    .fillStyle("rgb(121,173,210)");
+
+vis.render();
+</script>
+
+<p>
+    <strong>Time (days)</strong><br/>
+    <span class="hint">The total amount of money {{application.user.first_name}} has earned for charity.</span>
+</p>

@@ -1,0 +1,43 @@
+{% extends "base_template.html" %}
+{% load webdesign %}
+
+{%block page_content%}
+<h2>Register</h2>
+<p>Use the form below to create a Donate! account. After your account is setup you'll be able to create Donate! applications.</p>
+
+<div class="span-12" style="float: none; margin: 0 auto;">
+    <form action="{{request.path}}" method="POST">
+    {%csrf_token%}
+    <table>
+        <caption>Registration Details</caption>
+        <tr>
+            <th>First name:</th>
+            <td class="field"><input type="text" name="first_name" size="30" value="{{first_name}}"></td>
+        </tr>
+        <tr>
+            <th>Last name:</th>
+            <td class="field"><input type="text" name="last_name" size="30" value="{{last_name}}"></td>
+        </tr>
+        <tr>
+            <th>Email address:</th>
+            <td class="field"><input type="text" name="email" size="30" value="{{email}}"></td>
+        </tr>
+        <tr>
+            <th>Password:</th>
+            <td class="field"><input type="password" name="password" size="30"></td>
+        </tr>
+        <tr>
+            <th>Confirm password:</th>
+            <td class="field"><input type="password" name="password2" size="30"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="field">
+                <a href="{% url donate.views.index%}">Cancel</a>
+                <input type="submit" value="Register">
+            </td>
+        </tr>
+    </table>
+    </form>
+</div>
+
+{%endblock%}

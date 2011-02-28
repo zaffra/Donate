@@ -1,0 +1,29 @@
+{% extends "base_template.html" %}
+
+{% block page_content %}
+
+<div class="span-12 center" style="float: none; margin: 0 auto;">
+    <h2>{{application.name}} Donation</h2>
+
+    {% if pay_key %}
+    <p>You are donating ${{donation_amount}} for the application <em>{{application.name}}</em>. The donation transaction will be handled by PayPal. Your donation will be split equally among the following charities:
+    </p>
+
+    <ul style="list-style: none;">
+    {% for charity in supporting_charities %}
+        <li>{{charity.name}}</li>
+    {% endfor %}
+    </ul>
+
+    <p>To confirm your donation and begin the transaction, please click the PayPal donate button below or <a href="{% url donate.views.view_application application.slug%}">cancel</a>.</p>
+    <form action="https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey={{pay_key}}" method="POST">
+    {% csrf_token %}
+        <input id="paypalButton" type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+    </form>
+    {% else %}
+    <p>We're sorry, but an error occurred while setting up your PayPal transaction. Please try again.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
+

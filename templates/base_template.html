@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>Donate! :: {%block page_title%}Home{%endblock%}</title>
+	
+	<script type="text/javascript" src="/static/js/jquery-1.4.4.js"></script>
+	
+	<!--BLUEPRINT-->
+	<link rel="stylesheet" href="/static/css/blueprint/screen.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="/static/css/blueprint/print.css" type="text/css" media="print"> 
+	<!--[if lt IE 8]>
+	<link rel="stylesheet" href="/static/css/blueprint/ie.css" type="text/css" media="screen, projection">
+	<![endif]-->
+	
+	<!--STYLE-->
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+	
+	{%block head_extension%}{%endblock%}
+</head>
+<body>
+	<div class="container">
+		
+		<!--HEADER-->
+  		<div class="logo span-24">
+            Donate<span class="bang">!</span>
+		</div>
+		
+		<!--NAVIGATION-->
+		<div class="span-24" id="navbar">
+			<ul class="menu">
+			{%if user.is_authenticated%}
+			<li style="float:right;"><a href="{%url donate.views.signout%}">Sign out</a></li>
+			<li style="float:left;"><a href="{% url donate.views.account %}">Your Account</a></li>
+			<li style="float:left;"><a href="{% url donate.views.create_edit_application %}">Create Application</a></li>
+			{%else%}
+			<li><a href="{%url donate.views.index %}">Sign In</a></li>
+			<li><a href="{%url donate.views.register%}">Register</a></li>
+			{%endif%}
+			</ul>
+		</div>
+		
+		<hr class="space"/>
+		
+		<!--MESSAGES-->
+		<div class="span-24">
+			<ul id="message_list" class="list_style_none">
+				{%if messages%}
+			    {%for message in messages%}
+			    <li{%if message.tags%} class="{{ message.tags }}"{%endif%}>{{ message }}</li>
+			    {%endfor%}
+				{%endif%}
+			</ul>
+		</div>
+
+        <div class="span-24">
+            {%block page_content%}{%endblock%}
+        </div>
+
+		<!--FOOTER-->
+		<div class="span-24">
+		{%block page_footer%}{%endblock%}
+		</div>
+		
+	<!--end container-->
+	</div>
+
+</body>
+</html>
+

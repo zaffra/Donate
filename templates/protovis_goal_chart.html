@@ -1,0 +1,96 @@
+<p>
+    <strong>{{ application.user.first_name}}'s goal</strong>: 
+    <span>{{application.goal_value}} 
+        {% if application.goal_value != 1 %}
+            {{application.goal_units_plural}}
+        {% else %}
+            {{application.goal_units_singular}}
+        {% endif %}
+    </span><br/>
+
+    <strong>{{ application.user.first_name}}'s total progress</strong>: 
+    <span>{{current_value}} 
+        {% if application.current_value != 1 %}
+            {{application.goal_units_plural}}
+        {% else %}
+            {{application.goal_units_singular}}
+        {% endif %}
+    </span>
+</p>
+
+<div style="-webkit-transform: rotate(-90deg); position: relative; top: 115px; left: -225px;"><strong>Daily {{ application.goal_units_plural }}</strong></div>
+
+<script type="text/javascript+protovis">
+
+var barWidth = 20;
+var data = {{goal_updates|safe}};
+var dates = [];
+var max_y = {{application.goal_value|safe}};
+
+for(var i = 0; i < data.length; ++i) {
+    if(data[i].y > max_y) {
+        max_y = data[i].y;
+    }
+    dates.push(new Date(data[i].date_string));
+}
+
+var startDate = dates[0];
+var endDate = dates[dates.length-1];
+
+/* Sizing and scales. */
+var w = {{chart_width}},
+    h = 200,
+    x = pv.Scale.linear(data, function(d) d.x).range(0, w),
+    y = pv.Scale.linear(0, max_y).range(0, h),
+    z = pv.Scale.linear(startDate, endDate).range(0, w);
+
+/* The root panel. */
+var vis = new pv.Panel()
+    .width(w)
+    .height(h)
+    .bottom(20)
+    .left(20)
+    .right(10)
+    .top(5);
+
+/* Y-axis and ticks. */
+vis.add(pv.Rule)
+    .data(y.ticks(5))
+    .bottom(y)
+    .strokeStyle(function(d) d ? "#eee" : "#000")
+  .anchor("left").add(pv.Label)
+    .text(y.tickFormat);
+
+/* X-axis and ticks. */
+vis.add(pv.Rule)
+    .data(x.ticks(data.length))
+    .visible(true)
+    .left(function(d) {
+        return x(this.index) + (this.index == 0 ? barWidth/2 : 0);
+    })
+    .bottom(-5)
+    .height(5)
+/* X-axis labels */
+  .anchor("bottom").add(pv.Label)
+    .text(function() {
+        var d = dates[this.index];
+        return (d.getMonth()+1) + "/" + d.getDate();
+    })
+
+/* Bars for the chart */
+vis.add(pv.Bar)
+    .data(data)
+    .bottom(0).width(barWidth)
+    .left(function() {
+        return x(this.index) - (this.index ? barWidth/2: 0);
+    })
+    .height(function(d) d.y/max_y*h)
+    .fillStyle("rgb(121,173,210)");
+
+vis.render();
+</script>
+
+<p>
+    <strong>Time (days)</strong><br/>
+    <span class="hint">{{application.user.first_name}}'s daily progress.</span>
+</p>

@@ -1,0 +1,102 @@
+{% extends "base_template.html" %}
+{% load webdesign %}
+
+{% block head_extension %}
+
+<script type="text/javascript">
+    function un_change(event) {
+        un = $(this).val().replace(/[^a-zA-Z0-9 ]+/g,'');
+        $(this).val(un);
+        update_app_name_hint();
+    }
+
+    function update_app_name_hint() {
+        var v = $("#app_name").val().toLowerCase().replace(/[ ]+/g, "-");
+
+        if(v.length) {
+            $("#app_name_hint").text(v);
+        } else {
+            $("#app_name_hint").text("name_goes_here");
+        }
+    }
+
+    $(document).ready(function() {
+        // Set up key event handling on application name
+        // to update the hint
+        $("#app_name").keyup(un_change).blur(un_change);
+        update_app_name_hint();
+    });
+</script>
+
+{% endblock %}
+
+{% block page_content %}
+<table>
+    <caption>{% if app_id %}Edit{% else %}New{% endif %} Application</caption>
+</table>
+
+<form action="{% url donate.views.create_edit_application %}" method="POST">
+{% csrf_token %}
+
+{% if app_id %}
+<input type="hidden" name="app_id" value="{{app_id}}">
+{% endif %}
+
+<table class="application">
+    <tr>
+        <td>
+            <strong>Application name:</strong><br/>
+            {# input is readonly when we're editing because we don't want them changing the slug field #}
+            <input id="app_name" type="text" name="name" value="{{name}}" {% if app_id %}readonly="readonly" class="readonly"{% endif %}> <br/>
+            <span class="hint">Used in URL mapping: http://foo.com/app/<span id="app_name_hint">NAME</span></span><br/>
+            <span class="hint">NOTE: Application name cannot be changed after creation.</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <strong>Description:</strong><br/>
+            <textarea name="description">{{description}}</textarea><br/>
+            <span class="hint">This is the primary message used to describe your goal to potential donors. Be thorough, but concise.</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <strong>Goal Value:</strong><br/>
+            <input type="text" name="goal_value" value="{{goal_value}}"><br/>
+            <span class="hint">Goal value integer. Example: 15</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <strong>Singluar Goal Units:</strong><br/>
+            <input type="text" name="goal_units_singular" value="{{goal_units_singular}}"><br/>
+            <span class="hint">Singular goal units string. Example: pound</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <strong>Plural Goal Units:</strong><br/>
+            <input type="text" name="goal_units_plural" value="{{goal_units_plural}}"><br/>
+            <span class="hint">Plural goal units string. Example: pounds</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <strong>Charities:</strong><br/>
+            <select name="charities" multiple>
+            {% for charity in charities %}
+                <option value="{{charity.id}}" {% if charity.id in app_charities %}selected{% endif %}>{{charity.name}}</option>
+            {% endfor %}
+            </select><br/>
+            <span class="hint">Select one or more charities to donate proceeds to.</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="{% url donate.views.account %}">Cancel</a>&nbsp;&nbsp;<input type="submit" value="Submit">
+        </td>
+    </tr>
+</table>
+</form>
+
+{% endblock %}

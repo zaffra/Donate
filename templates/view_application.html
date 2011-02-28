@@ -1,0 +1,68 @@
+{% extends "base_template.html" %}
+
+{% block head_extension %}
+    <script type="text/javascript" src="/static/js/protovis-r3.2.js"></script>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="span-8 append-1">
+    <h2 style="margin:0;">{{application.name}}</h2>
+
+    <p><strong>Owner</strong>: <span>{{application.user.get_full_name}}</span></p>
+    <p><strong>Description</strong>: <span>{{application.description}}</span></p>
+    <p><strong>Created on</strong>: <span>{{application.created_datetime}}</span></p>
+
+    <p>
+        <strong>Charities supported by my goal:</strong><br/>
+        <ul>
+        {% for charity in supporting_charities %}
+            <li>{{charity.name}}</li>
+        {% endfor %}
+        </ul>
+    </p>
+
+    <form action="{% url donate.views.donate %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="app_id" value="{{application.id}}">
+    <table>
+        <caption>Your Donation</caption>
+        <tr>
+            <td class="center">
+                <strong>Your Donation:&nbsp;&nbsp;</strong><input type="text" name="donation" value="5.00" size="5"> (USD)<br/>
+                <span class="hint">Your donation will be split equally among the supporting charities above.</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="center">
+                <input id="paypalButton" type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+            </td>
+        </tr>
+    </table>
+    </form>
+    {% if user == application.user %}
+        <div class="center"><a href="#" onClick="$('#progressContainer').toggle(); $(this).toggle(); return false;">Update your progress</a></div>
+
+        <form action="{% url donate.views.update_progress %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="app_id" value="{{application.id}}">
+        <div id="progressContainer" class="center" style="display: none;">
+            <strong>Progress</strong>: <input type="text" name="progress" size="5"> ({{application.goal_units_plural}})
+            <input type="submit" value="Update">
+        </div>
+        </form>
+    {% endif %}
+</div>
+
+<div class="span-14 last" style="border-left: 1px solid #ddd;">
+    {% with 400 as chart_width %}
+    <div class="center">
+        {% include "protovis_goal_chart.html" %}
+        <hr/>
+        {% include "protovis_donation_chart.html" %}
+    </div>
+    {% endwith %}
+</div>
+
+
+{% endblock %}

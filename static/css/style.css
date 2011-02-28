@@ -1,0 +1,101 @@
+body {
+    background: url('/static/images/bg.png') repeat-x center top;
+}
+.container {
+    background: #fff;
+    padding: 0px 20px;
+}
+.list_style_none {
+    list-style: none;
+}
+
+.logo {
+    font-size: 24pt;
+    color: #4A99CC;
+}
+.logo .bang {
+    font-size: 28pt;
+    font-weight: bold;
+    font-style: italic;
+    color: #FF9400;
+}
+
+/*
+NAVIGATION
+*/
+#navbar {
+	background-color: #4A99CC;
+}
+
+.menu {
+    list-style: none;
+	margin: 0;
+}
+.menu li {
+    list-style: none;
+	margin: 0 10px 0 0;
+	float: right;
+}
+.menu a {
+	color: #FFFFFF;
+	text-decoration: none;
+    letter-spacing: 0.1em;
+    font-weight: bold;
+	text-transform: uppercase;
+	font-size: 13px;
+	display: block;
+	height: 30px;
+	padding: 12px 15px 0 15px;
+}
+
+/*
+TABLES
+*/
+table caption {
+	background-color: #4A99CC;
+    text-align: center;
+    padding: 7px;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 14px;
+}
+tbody tr:nth-child(even) td, 
+tbody tr.even td {
+    background: none;
+}
+td.label {
+    text-align: left;
+}
+td.field {
+    text-align: right;
+}
+
+h1, h2, h3, h4 {
+	color: #066CAC;
+}
+
+table.application input#app_name,
+table.application td textarea {
+    width: 450px;
+}
+
+table.application td textarea {
+    height: 65px;
+}
+
+table.application td input[type="text"],
+table.application td select {
+    width: 200px;
+}
+
+.hint {
+    color: #ccc;
+}
+
+.center {
+    text-align: center;
+}
+
+input.readonly {
+    background: #dedede;
+}

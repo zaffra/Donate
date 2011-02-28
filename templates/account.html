@@ -1,0 +1,12 @@
+{% extends "base_template.html" %}
+{% load webdesign %}
+
+{%block page_content%}
+<h2>Account</h2>
+<p>
+Below is a list of all your Donate! applications. You can edit and delete any of your existing applications using the corresponding links next to the specific application. Clicking the name of the application will take you to your live application to see how others see it.
+</p>
+
+{% include "application_list.html" %}
+
+{%endblock%}
